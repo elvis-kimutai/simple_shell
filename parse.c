@@ -6,16 +6,26 @@
 
 #define MAX_ARGS 10
 
-int parseArguments(char *line, char **args) {
-    int count = 0;
-    char *token = strtok(line, " \t\n");
+/**
+ * parseArguments - Parses the command line arguments
+ * @line: The input line containing the arguments
+ * @args: Array to store the parsed arguments
+ *
+ * Return: The number of arguments parsed
+ */
 
-    while (token != NULL && count < MAX_ARGS - 1) {
-        args[count] = token;
-        count++;
-        token = strtok(NULL, " \t\n");
-    }
+int parseArguments(char *line, char **args)
+{
+	int count = 0;
+	char *token = strtok(line, " \t\n");
 
-    args[count] = NULL;
-    return count;
+	while (token != NULL && count < MAX_ARGS - 1)
+	{
+		args[count] = token;
+		count++;
+		token = strtok(NULL, " \t\n");
+	}
+
+	args[count] = NULL;
+	return (count);
 }

@@ -1,11 +1,19 @@
 #include "shell.h"
 #include <stdio.h>
-void printEnvironment() {
-    extern char **environ;
-    char **env = environ;
+#include <unistd.h>
+#include <string.h>
+/**
+ * printEnvironment - Prints the environment variables
+ */
 
-    while (*env) {
-        printf("%s\n", *env);
-        env++;
-    }
+void printEnvironment(void)
+{
+	char **env = environ;
+
+	while (*env)
+	{
+		write(STDOUT_FILENO, *env, strlen(*env));
+		write(STDOUT_FILENO, "\n", 1);
+		env++;
+	}
 }

@@ -4,36 +4,58 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+#include "shell.h"
+
 #define MAX_ARGS 10
 #define MAX_PATH 1024
-#include "shell.h"
-void executeCommand(char *command) {
-    pid_t pid = fork();
 
-    if (pid == -1) {
-        perror("fork");
-        return;
-    } else if (pid == 0) {
-        char *args[MAX_ARGS];
-        int i = 0;
+/**
+ * executeCommand - Executes a command in a new process
+ * @command: The command to execute
+ */
 
-        args[i++] = strtok(command, " ");
-        while (i < MAX_ARGS - 1) {
-            args[i] = strtok(NULL, " ");
-            if (args[i] == NULL)
-                break;
-            i++;
-        }
-        args[i] = NULL;
+void executeCommand(char *command)
+{
+	pid_t pid = fork();
 
-        execvp(args[0], args);
-        perror("execvp");
-        exit(1);
-    } else {
-        wait(NULL);
-    }
+	if (pid == -1)
+	{
+		perror("fork");
+		return;
+	}
+	else if (pid == 0)
+	{
+		char *args[MAX_ARGS];
+		int i = 0;
+
+		args[i++] = strtok(command, " ");
+		while (i < MAX_ARGS - 1)
+		{
+			args[i] = strtok(NULL, " ");
+			if (args[i] == NULL)
+				break;
+			i++;
+		}
+		args[i] = NULL;
+
+		execvp(args[0], args);
+		perror("execvp");
+		exit(1);
+	}
+	else
+	{
+		wait(NULL);
+	}
 }
-void exitShell() {
-    printf("Exiting the shell...\n");
-    exit(0);
+
+/**
+ * exitShell - Exits the shell
+ */
+
+void exitShell(void)
+{
+	const char exitMsg[] = "Exiting the shell...\n";
+
+	write(STDOUT_FILENO, exitMsg, sizeof(exitMsg) - 1);
+	exit(0);
 }
