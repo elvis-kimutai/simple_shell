@@ -17,7 +17,11 @@
 void executeCommand(char *command)
 {
 	pid_t pid = fork();
-
+	if (strcmp(command, "exit") == 0)
+	{
+		exitShell(0);
+		return;
+	}
 	if (pid == -1)
 	{
 		perror("fork");
