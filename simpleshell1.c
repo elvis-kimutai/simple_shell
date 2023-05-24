@@ -58,6 +58,11 @@ int main(void)
 		{
 			handleUnsetenvCommand(command);
 		}
+		else if (strcmp(command, "cd") == 0)
+		{
+			handleCdCommand(command);
+			continue;
+		}
 		else
 		{
 			executeCommand(command);

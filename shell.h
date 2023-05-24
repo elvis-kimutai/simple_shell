@@ -11,7 +11,7 @@
 #define MAX_ARGS 10
 #define MAX_PATH 1024
 #include "shell.h"
-
+#include <limits.h> 
 #define BUFFER_SIZE 1024
 #define MAX_ARGS 10
 #define MAX_PATH 1024
@@ -25,4 +25,5 @@ void handleExitCommand(char *command);
 void handleSetenvCommand(char *command);
 void handleUnsetenvCommand(char *command);
 extern char **environ;
+void handleCdCommand(char *command);
 #endif 
