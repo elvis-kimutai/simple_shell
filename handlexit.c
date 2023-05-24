@@ -11,6 +11,36 @@
 
 void handleExitCommand(char *command)
 {
-	UNUSED(command);
-	exitShell(0);
+	int argStart = strlen("exit");
+	int argEnd = strlen(command) - 1;
+	char exitStatus[16];
+	int status;
+	
+	while (command[argStart] == ' ')
+	{
+		argStart++;
+	}
+	if (command[argStart] == '\0')
+	{
+		status = 0;
+	}
+	else
+	{
+		while (argEnd > argStart && command[argEnd] == ' ')
+		{
+			argEnd--;
+		}
+		if (argEnd >= argStart)
+		{
+			strncpy(exitStatus, &command[argStart], argEnd - argStart + 1);
+			exitStatus[argEnd - argStart + 1] = '\0';
+			status = atoi(exitStatus);
+		}
+		else
+		{
+			write(STDERR_FILENO, "Error: Invalid argument for exit\n", strlen("Error: Invalid argument for exit\n"));
+			return;
+		}
+	}
+	 exitShell(status);
 }
