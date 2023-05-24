@@ -19,32 +19,38 @@ int main(void)
 	char *line = NULL;
 	size_t size = 0;
 	ssize_t lineSize;
+	int interactiveMode = isatty(STDIN_FILENO);
+	size_t argSize = 0;
+	char *arg =  NULL;
 
-	while (1)
+	while ((lineSize = my_getline(&line, &size, stdin)) != -1)
 	{
-		char prompt[] = "#cisfun$ ";
-		write(STDOUT_FILENO, prompt, sizeof(prompt) - 1);
-
-		lineSize = my_getline(&line, &size, stdin);
-
-		if (lineSize == -1)
+		if (interactiveMode)
 		{
-			break;
+			char prompt[] = "#cisfun$ ";
+			write(STDOUT_FILENO, prompt, sizeof(prompt) - 1);
+
+			lineSize = my_getline(&line, &size, stdin);
 		}
 
-		command = strtok(line, "\n");
+		line[lineSize - 1] = '\0';
+		command = line;
 
 		if (strcmp(command, "cd") == 0)
 		{
-			char *arg = strtok(NULL, "\n");
 
-			if (arg == NULL || arg[0] == '\0')
+			if (my_getline(&arg, &argSize, stdin) != -1) 
 			{
-				chdir("/");
-			}
-			else
-			{
-				chdir(arg);
+				arg[strcspn(arg, "\n")] = '\0';
+				if (arg[0] == '\0') 
+				{
+					chdir("/");
+				}
+				else
+				{
+					chdir(arg);
+				}
+				free(arg);
 			}
 			continue;
 		}
