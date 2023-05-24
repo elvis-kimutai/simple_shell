@@ -21,7 +21,6 @@ int main(void)
 			char prompt[] = "#cisfun$ ";
 
 			write(STDOUT_FILENO, prompt, sizeof(prompt) - 1);
-			lineSize = my_getline(&line, &size, stdin);
 		}
 		line[lineSize - 1] = '\0';
 		command = line;

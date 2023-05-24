@@ -11,36 +11,35 @@
 
 void handleSetenvCommand(char *command)
 {
-	char *space = strchr(command, ' ');
-	char *space2 = strchr(space, ' ');
-
-	if (space == NULL)
+	char *arg = command + 6;
+	char *variable = arg;
+	char *value = arg;
+	while (*arg == ' ')
+		arg++;
+	while (*arg != ' ' && *arg != '\0')
+		arg++;
+	if (*arg == '\0' || *(arg + 1) == '\0')
 	{
 		write(STDERR_FILENO, "Error: Invalid setenv command\n", strlen("Error: Invalid setenv command\n"));
 		return;
 	}
-	space++;
-
-	if (space2 == NULL)
+	*arg = '\0';
+	arg++;
+	while (*arg == ' ')
+		arg++;
+	while (*arg != '\0')
+		arg++;
+	arg--;
+	while (*arg == ' ')
 	{
-		write(STDERR_FILENO, "Error: Invalid setenv command\n", strlen("Error: Invalid setenv command\n"));
-		return;
+		*arg = '\0';
+		arg--;
 	}
-	*space2 = '\0';
-	space2++;
-
-	if (*space == '\0' || *space2 == '\0')
+	if (setenv(variable, value, 1) != 0)
 	{
-		write(STDERR_FILENO, "Error: Invalid setenv command\n", strlen("Error: Invalid setenv command\n"));
-		return;
-	}
-	if (setenv(space, space2, 1) == -1)
-	{
-		write(STDERR_FILENO, "Error: Failed to set environment variable\n", strlen("Error: Failed to set environment variable\n"));
-		return;
+		perror("setenv");
 	}
 }
-
 /**
  * handleUnsetenvCommand - Handles the unsetenv command
  * @command: The command string
