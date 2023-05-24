@@ -5,51 +5,67 @@
  */
 void handleCdCommand(char *command)
 {
-	char *arg = strtok(command, " ");
+	char *arg = command + 3;
+	char *home = getenv("HOME");
+	char *previousDir = getenv("OLDPWD");
 	char cwd[PATH_MAX];
-	arg = strtok(NULL, " ");
+	char *oldPwd = getenv("PWD");
 
-	if (arg == NULL)
+	if (*arg == '\0')
 	{
-		arg = getenv("HOME");
-		if (arg == NULL)
+		if (home != NULL)
 		{
-			perror("cd");
-			return;
+			if (chdir(home) == -1)
+			{
+				perror("chdir");
+			}
+		}
+		else
+		{
+			write(STDERR_FILENO, "Error: HOME environment variable not set\n", strlen("Error: HOME environment variable not set\n"));
 		}
 	}
 	else if (strcmp(arg, "-") == 0)
 	{
-		arg = getenv("OLDPWD");
-		if (arg == NULL)
+		if (previousDir != NULL)
 		{
-			perror("cd");
-			return;
+			if (chdir(previousDir) == -1)
+			{
+				perror("chdir");
+			}
+		}
+		else
+		{
+			write(STDERR_FILENO, "Error: OLDPWD environment variable not set\n", strlen("Error: OLDPWD environment variable not set\n"));
 		}
 	}
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	else
 	{
-		perror("cd");
-		return;
+		if (chdir(arg) == -1)
+		{
+			perror("chdir");
+		}
 	}
-	if (chdir(arg) == -1)
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
 	{
-		perror("cd");
-		return;
+		if (setenv("PWD", cwd, 1) == -1)
+		{
+			perror("setenv");
+		}
+		if (oldPwd != NULL)
+		{
+			if (setenv("OLDPWD", oldPwd, 1) == -1)
+			{
+				perror("setenv");
+			}
+		}
+		else
+		{
+			write(STDERR_FILENO, "Error: PWD environment variable not set\n", strlen("Error: PWD environment variable not set\n"));
+		}
 	}
-	if (setenv("OLDPWD", cwd, 1) == -1)
+	else
 	{
-		perror("cd");
-		return;
-	}
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
-	{
-		perror("cd");
-		return;
-	}
-	if (setenv("PWD", cwd, 1) == -1)
-	{
-		perror("cd");
-		return;
+		perror("getcwd");
 	}
 }

@@ -3,11 +3,12 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
-
+#include "parse.h"
 #include "shell.h"
-
-#define MAX_ARGS 10
 #define MAX_PATH 1024
+#define MAX_ARGS 10
+
+int parseCommand(char *command, char **args);
 
 /**
  * executeCommand - Executes a command in a new process
@@ -17,11 +18,7 @@
 void executeCommand(char *command)
 {
 	pid_t pid = fork();
-	if (strcmp(command, "exit") == 0)
-	{
-		exitShell(0);
-		return;
-	}
+	
 	if (pid == -1)
 	{
 		perror("fork");
@@ -33,15 +30,16 @@ void executeCommand(char *command)
 		int i = 0;
 
 		args[i++] = strtok(command, " ");
+
 		while (i < MAX_ARGS - 1)
 		{
 			args[i] = strtok(NULL, " ");
+
 			if (args[i] == NULL)
 				break;
 			i++;
 		}
 		args[i] = NULL;
-
 		execvp(args[0], args);
 		perror("execvp");
 		exit(1);
@@ -51,7 +49,6 @@ void executeCommand(char *command)
 		wait(NULL);
 	}
 }
-
 /**
  * exitShell - Exits the shell
  */
