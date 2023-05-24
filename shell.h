@@ -8,6 +8,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#define MAX_ARGS 10
+#define MAX_PATH 1024
 #include "shell.h"
 
 #define BUFFER_SIZE 1024

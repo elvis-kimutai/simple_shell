@@ -1,13 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/wait.h>
-
-#define MAX_ARGS 10
-#define MAX_PATH 1024
 #include "shell.h"
-
 /**
  * main - Entry point for the shell program
  *
@@ -28,21 +19,18 @@ int main(void)
 		if (interactiveMode)
 		{
 			char prompt[] = "#cisfun$ ";
-			write(STDOUT_FILENO, prompt, sizeof(prompt) - 1);
 
+			write(STDOUT_FILENO, prompt, sizeof(prompt) - 1);
 			lineSize = my_getline(&line, &size, stdin);
 		}
-
 		line[lineSize - 1] = '\0';
 		command = line;
-
 		if (strcmp(command, "cd") == 0)
 		{
-
-			if (my_getline(&arg, &argSize, stdin) != -1) 
+			if (my_getline(&arg, &argSize, stdin) != -1)
 			{
 				arg[strcspn(arg, "\n")] = '\0';
-				if (arg[0] == '\0') 
+				if (arg[0] == '\0')
 				{
 					chdir("/");
 				}
@@ -76,7 +64,6 @@ int main(void)
 			executeCommand(command);
 		}
 	}
-
 	free(line);
 	return (0);
 }
